@@ -1,6 +1,7 @@
 // Import the express in typescript file
 import express from 'express';
 import cors from "cors"
+import { createDatabase } from './database/database';
 
  
 // Initialize the express engine
@@ -14,6 +15,8 @@ const port: number = 8080;
 app.get('/', (_req, _res) => {
     _res.send({"message":"TypeScript With Express"});
 });
+
+createDatabase()
  
 // Server setup
 app.listen(port, () => {
