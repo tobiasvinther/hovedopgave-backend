@@ -1,9 +1,63 @@
 import { Sequelize, DataTypes, DATE, TIME } from 'sequelize'
 
-export function createDatabase() {
-    //Instantiate the database (in-memory for now)
-    const sequelize = new Sequelize('sqlite::memory:') // Example for sqlite
+//Instantiate the database (in-memory for now)
+export const sequelize = new Sequelize('sqlite::memory:') // Example for sqlite
 
+//Define bird model
+console.log('Defining model...')
+export const Birds = sequelize.define('Birds', {
+id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+    },
+species: {
+    type: DataTypes.STRING,
+    allowNull: false,
+},
+subspecies: {
+    type: DataTypes.STRING,
+    allowNull: true,
+},
+order: {
+    type: DataTypes.STRING,
+    allowNull: true,
+},
+redList: {
+    type: DataTypes.STRING,
+    allowNull: true,
+},
+});
+
+//Define observation model
+console.log('Defining model...')
+export const Observations = sequelize.define('Observations', {
+id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+    },
+date: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+    allowNull: false,
+},
+time: {
+    type: DataTypes.TIME,
+    allowNull: true,
+},
+note: {
+    type: DataTypes.STRING,
+    allowNull: true,
+}
+});
+
+ //Set up associations
+ Birds.hasMany(Observations, {as: 'observations', foreignKey: 'birdId'})
+ Observations.belongsTo(Birds, {as: 'bird', foreignKey: 'birdId'})
+
+export function createDatabase() {
+    
     //Test the connection
     console.log('Testing connection...')
     async function testConnection() {
@@ -16,59 +70,6 @@ export function createDatabase() {
     }
 
     testConnection()
-
-    //Define bird model
-    console.log('Defining model...')
-    const Birds = sequelize.define('Birds', {
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
-        },
-    species: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    subspecies: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
-    order: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
-    redList: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
-    });
-
-    //Define observation model
-    console.log('Defining model...')
-    const Observations = sequelize.define('Observations', {
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
-        },
-    date: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-        allowNull: false,
-    },
-    time: {
-        type: DataTypes.TIME,
-        allowNull: true,
-    },
-    note: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    }
-    });
-
-    //Set up associations
-    Birds.hasMany(Observations, {as: 'observations', foreignKey: 'birdId'})
-    Observations.belongsTo(Birds, {as: 'bird', foreignKey: 'birdId'})
 
     //Sync database
     console.log('Syncing database...')
@@ -114,7 +115,7 @@ export function createDatabase() {
 
     function createTestObservations() {
         console.log('Creating observations...')
-        const observation = Observations.create({
+        Observations.create({
             date : new DATE(),
             time : new TIME(),
             note : 'A note',
