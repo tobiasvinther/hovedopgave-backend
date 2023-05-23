@@ -2,6 +2,7 @@ import { Router } from 'express';
 import multer, { Multer } from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { Birds, Images } from '../database/database';
 
 const router = Router();
 const upload: Multer = multer({ dest: '../uploads/' });
@@ -13,7 +14,7 @@ if (!fs.existsSync(uploadFolder)) {
 }
 
 //POST - upload image
-router.post('/api/upload', upload.single('image'), (req : any, res : any) => {
+router.post('/api/upload', upload.single('image'), async (req : any, res : any) => {
     if (!req.file) {
       return res.status(400).json({ error: 'No image file provided' });
     }
@@ -30,8 +31,34 @@ router.post('/api/upload', upload.single('image'), (req : any, res : any) => {
         }
     
         console.log('Image saved successfully!');
-        return res.sendStatus(200);
+        //return res.sendStatus(200);
     })
-})
+
+    //
+    const birdId = req.body.birdId;
+
+    try {
+        // Find the bird by its ID in the database
+        const bird : any = await Birds.findByPk(birdId);
+
+        if (!bird) {
+            return res.status(404).json({ error: 'Bird not found' });
+        }
+
+        // Create a new image record associated with the bird
+        const image = await Images.create({
+        path: req.file.path,
+        birdId: bird.id,
+        });
+
+        console.log("Image saved:", image)
+        return res.status(200).json({ success: 'Image uploaded and associated with bird' });
+
+    }   catch (error) {
+            console.error('Error uploading image:', error);
+            return res.status(500).json({ error: 'Failed to upload image' });
+    }
+});
+
 
 export default router;
