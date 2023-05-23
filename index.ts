@@ -3,6 +3,7 @@ import express from 'express';
 import cors from "cors"
 import { createDatabase } from './database/database';
 import birdRouter from "./routers/birdRouter"
+import uploadRouter from "./routers/uploadRouter";
 
  
 // Initialize the express engine
@@ -20,6 +21,7 @@ app.get('/', (_req, _res) => {
 createDatabase()
 
 app.use(birdRouter)
+app.use(uploadRouter)
  
 // Server setup
 app.listen(port, () => {
