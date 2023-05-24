@@ -1,7 +1,7 @@
 import { Sequelize, DataTypes, DATE, TIME } from 'sequelize'
 
 //Instantiate the database (in-memory for now)
-export const sequelize = new Sequelize('sqlite::memory:') // Example for sqlite
+export const sequelize = new Sequelize('sqlite::memory:')
 
 //Define bird model
 console.log('Defining model...')
@@ -52,9 +52,24 @@ note: {
 }
 });
 
- //Set up associations
- Birds.hasMany(Observations, {as: 'observations', foreignKey: 'birdId'})
- Observations.belongsTo(Birds, {as: 'bird', foreignKey: 'birdId'})
+//Image Model
+export const Images = sequelize.define('Images', {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    path: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+});
+
+//Set up associations
+Birds.hasMany(Observations, {as: 'observations', foreignKey: 'birdId'})
+Observations.belongsTo(Birds, {as: 'bird', foreignKey: 'birdId'})
+Birds.hasMany(Images, { as: 'images', foreignKey: 'birdId' });
+Images.belongsTo(Birds, {as : 'bird', foreignKey: 'birdId' });
 
 export function createDatabase() {
     
@@ -116,8 +131,8 @@ export function createDatabase() {
     function createTestObservations() {
         console.log('Creating observations...')
         Observations.create({
-            date : new DATE(),
-            time : new TIME(),
+            date : '1999-02-12',
+            time : '11:31',
             note : 'A note',
             birdId: 1
         })
