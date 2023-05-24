@@ -1,4 +1,6 @@
 import { Sequelize, DataTypes, DATE, TIME } from 'sequelize'
+import bcrypt from 'bcrypt'; 
+  
 
 //Instantiate the database (in-memory for now)
 export const sequelize = new Sequelize('sqlite::memory:') // Example for sqlite
@@ -52,9 +54,39 @@ note: {
 }
 });
 
+//Define user model
+console.log('Defining model...')
+export const Users = sequelize.define('User', {
+id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+    },
+firstName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+},
+lastName: {
+    type: DataTypes.STRING,
+    allowNull: false
+},
+email: {
+    type: DataTypes.CHAR,
+    allowNull: false
+},
+password: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+}
+});
+
+
+
  //Set up associations
  Birds.hasMany(Observations, {as: 'observations', foreignKey: 'birdId'})
  Observations.belongsTo(Birds, {as: 'bird', foreignKey: 'birdId'})
+ Users.hasMany(Observations, {as: 'observations', foreignKey: 'userId'})
+ Observations.belongsTo(Users, {as: 'user', foreignKey: 'userId'})
 
 export function createDatabase() {
     
@@ -78,6 +110,7 @@ export function createDatabase() {
         console.log('Database synchronized');
         createTestBirds()
         createTestObservations()
+        createTestUsers()
     })
     .catch((error) => {
         console.error('Unable to synchronize the database:', error);
@@ -129,6 +162,22 @@ export function createDatabase() {
             console.error('Unable to create observation:', error);
             });     
     }
-    
+
+    async function createTestUsers() {
+        console.log('Creating users...')
+        const result = await bcrypt.hash("1234", 12)
+        Users.create({
+            firstName: 'Bruce',
+            lastName: 'Wayne',
+            email: 'bw@wayneinterprise.com',
+            password: result
+        })
+        .then((user) => {
+            console.log('User created: ', user.toJSON());
+        })
+        .catch((error) => {
+            console.error('Unable to create user:', error);
+        });
+    }  
 }
 
