@@ -21,8 +21,9 @@ router.post('/api/upload', upload.single('image'), async (req : any, res : any) 
 
     //Handle the file and save it to a folder
     const file = req.file;
-    const fileName = file.originalname;
-    const filePath = path.join(uploadFolder, fileName);
+    //const fileName = file.originalname;
+    //const filePath = path.join(uploadFolder, fileName);
+    const filePath = path.join(uploadFolder, file.path + '.jpg');
 
     fs.rename(file.path, filePath, (error: NodeJS.ErrnoException | null) => {
         if (error) {
@@ -30,6 +31,8 @@ router.post('/api/upload', upload.single('image'), async (req : any, res : any) 
           return res.status(500).json({ error: 'Failed to save image' });
         }
     
+        console.log("File.path", file.path)
+        console.log("FilePath", filePath)
         console.log('Image saved successfully!');
         //return res.sendStatus(200);
     })
@@ -47,8 +50,8 @@ router.post('/api/upload', upload.single('image'), async (req : any, res : any) 
 
         // Create a new image record associated with the bird
         const image = await Images.create({
-        path: req.file.path,
-        birdId: bird.id,
+          path: req.file.path,
+          birdId: bird.id,
         });
 
         console.log("Image saved:", image)
@@ -58,6 +61,63 @@ router.post('/api/upload', upload.single('image'), async (req : any, res : any) 
             console.error('Error uploading image:', error);
             return res.status(500).json({ error: 'Failed to upload image' });
     }
+});
+
+//GET - get one image
+router.get('/api/image/:id', async (req: any, res: any) => {
+  
+  //const imageId = req.params.id;
+  //const imagePath = `uploads/${imageId}.jpg`; // Replace with the actual path to the image on the server
+
+  // Send the image file as the response
+  //res.sendFile(path.resolve(imagePath));
+
+  //const birdId = req.params.id;
+
+  const birdId = req.params.id;
+  //let image : any
+
+  try {
+      const image : any = await Images.findOne({
+      where: { birdId },
+      })
+
+      console.log(image)
+
+      if(image.path) {
+        const imagePath = `uploads/${image.path}.jpg`; // Replace with the actual path to the image on the server
+        // Send the image file as the response
+        res.sendFile(path.resolve(imagePath));
+      }
+      
+  } catch (error) {
+      console.error('Error finding image:', error);
+      return res.status(500).json({ error: 'Could not find image' });
+  };
+
+  
+});
+
+
+//GET - get list of images by birdId
+router.get('/api/images/', async (req: any, res: any) => {
+  
+  const birdId = req.params.id;
+
+  let imageList = []
+
+  try {
+      imageList = await Images.findAll({
+      where: { birdId },
+    })
+  } catch (error) {
+      console.error('Error finding image:', error);
+  };
+
+  //const imagePath = `uploads/${imageId}.jpg`; // Replace with the actual path to the image on the server
+
+  // Send the image file as the response
+  //res.sendFile(path.resolve(imagePath));
 });
 
 
