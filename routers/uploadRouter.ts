@@ -23,7 +23,8 @@ router.post('/api/upload', upload.single('image'), async (req : any, res : any) 
     const file = req.file;
     //const fileName = file.originalname;
     //const filePath = path.join(uploadFolder, fileName);
-    const filePath = path.join(uploadFolder, file.path + '.jpg');
+    //const filePath = path.join(uploadFolder, file.path + '.jpg');
+    const filePath = path.join("uploads", file.path + '.jpg');
 
     fs.rename(file.path, filePath, (error: NodeJS.ErrnoException | null) => {
         if (error) {
@@ -50,7 +51,8 @@ router.post('/api/upload', upload.single('image'), async (req : any, res : any) 
 
         // Create a new image record associated with the bird
         const image = await Images.create({
-          path: req.file.path,
+          //path: req.file.path,
+          path: filePath,
           birdId: bird.id,
         });
 
@@ -63,7 +65,7 @@ router.post('/api/upload', upload.single('image'), async (req : any, res : any) 
     }
 });
 
-//GET - get one image
+//GET - get one image by birdId
 router.get('/api/image/:id', async (req: any, res: any) => {
   
   //const imageId = req.params.id;
@@ -98,18 +100,23 @@ router.get('/api/image/:id', async (req: any, res: any) => {
   
 });
 
-
 //GET - get list of images by birdId
-router.get('/api/images/', async (req: any, res: any) => {
+router.get('/api/images/:id', async (req: any, res: any) => {
   
   const birdId = req.params.id;
 
-  let imageList = []
+  //let imageList = []
 
   try {
-      imageList = await Images.findAll({
+      const imageList : any = await Images.findAll({
       where: { birdId },
     })
+
+    //imageList = imageList.map((image: { path: any; }) => {url : image.path})
+
+    console.log("ImageList", imageList)
+    res.status(200).json(imageList);
+
   } catch (error) {
       console.error('Error finding image:', error);
   };

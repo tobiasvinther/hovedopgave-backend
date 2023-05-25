@@ -1,6 +1,7 @@
 // Import the express in typescript file
 import express from 'express';
 import cors from "cors"
+import path from 'path';
 import { createDatabase } from './database/database';
 import birdRouter from "./routers/birdRouter"
 import uploadRouter from "./routers/uploadRouter";
@@ -22,6 +23,8 @@ createDatabase()
 
 app.use(birdRouter)
 app.use(uploadRouter)
+// Serve the uploaded images statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
  
 // Server setup
 app.listen(port, () => {
