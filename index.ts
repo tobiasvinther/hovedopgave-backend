@@ -4,6 +4,7 @@ import cors from "cors"
 import path from 'path';
 import { createDatabase } from './database/database';
 import birdRouter from "./routers/birdRouter"
+import userRouter from "./routers/userRouter"
 import uploadRouter from "./routers/uploadRouter";
 
  
@@ -22,9 +23,12 @@ app.get('/', (_req, _res) => {
 createDatabase()
 
 app.use(birdRouter)
+app.use(userRouter)
 app.use(uploadRouter)
+
 // Serve the uploaded images statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
  
 // Server setup
 app.listen(port, () => {
