@@ -29,6 +29,10 @@ redList: {
     type: DataTypes.STRING,
     allowNull: true,
 },
+description: {
+    type: DataTypes.STRING,
+    allowNull: true,
+},
 });
 
 //Define observation model
@@ -124,7 +128,9 @@ export function createDatabase() {
         console.log('Database synchronized');
         createTestBirds()
         createTestObservations()
+        createTestImages()
         createTestUsers()
+
     })
     .catch((error) => {
         console.error('Unable to synchronize the database:', error);
@@ -137,7 +143,8 @@ export function createDatabase() {
             species: 'Blåhals',
             subspecies: 'Sydlig Blåhals',
             order: 'Spurvefugl',
-            redList: 'LC'
+            redList: 'LC',
+            description : 'Blåhals (Luscinia svecica) er en mindre spurvefugl, der yngler i store dele af Eurasien samt det nordvestlige Alaska. Hannen er kraftigt blå på bryst og strube med varierende sorte, rødbrune og hvide tegninger alt efter underart. Den er en nær slægtning til nattergalen. Arten forekommer som to underarter i Danmark, nordlig blåhals (subsp. svecica) og sydlig blåhals (subsp. cyanecula). Den nordlige blåhals er normalt en fåtallig trækgæst i moseterræn fra de skandinaviske fjeldbirkeskove, mens sydlig blåhals er en fåtallig ynglefugl i marsklandet i Sydvestjylland. Nordlig blåhals har en rødbrun strubeplet, mens sydlig blåhals har en hvidlig strubeplet. Blåhals ynglede første gang i Danmark i 1992 efter cirka hundrede års fravær og har siden bredt sig i Sydvestjylland med anslået 265 ynglepar i 2011.'
         })
             .then((bird) => {
             console.log('Bird created:', bird.toJSON());
@@ -150,7 +157,8 @@ export function createDatabase() {
             species: 'Råge',
             subspecies: '',
             order: 'Spurvefugl',
-            redList: 'LC'
+            redList: 'LC',
+            description : 'Rågen (Corvus frugilegus) er en kragefugl i ordenen af spurvefugle. Den har en længde på 45–48 cm. Råger yngler og overnatter i større eller mindre kolonier. På grund af støjen er de ikke altid lige populære naboer. Rågen ses ofte i flokke på marker. Den er fredet og må ikke jages. Rågen er helt sort på nær dens bare hudparti ved næbroden. Dette får også næbet til at se længere ud. Voksnes fjerdragt har metalglans i blåviolette farver, mens unge fugles fjerdragt er mere mat. Kønnene er ens. Rågen har "bukser", det vil sige fjerklædte ben. Desuden findes nedhængende fjer omkring den øverste del af benene samt opppustede, hængende bugfjer.'
         })
             .then((bird) => {
             console.log('Bird created:', bird.toJSON());
@@ -158,6 +166,47 @@ export function createDatabase() {
             .catch((error) => {
             console.error('Unable to create bird:', error);
             }); 
+    }
+
+    function createTestImages() {
+        console.log('Creating images...')
+        Images.create({
+            id: 1,
+            path : 'uploads/93edf5f3fed21e2f57eb473f50456811.jpg',
+            birdId : 2
+            
+        })
+            .then((image) => {
+            console.log('Image created:', image.toJSON());
+            })
+            .catch((error) => {
+            console.error('Unable to create image:', error);
+            });
+
+        Images.create({
+            id: 2,
+            path : 'uploads/f6c6fc9f2cee76bae6801eb2abdd7fb9.jpg',
+            birdId : 2
+            
+        })
+            .then((image) => {
+            console.log('Image created:', image.toJSON());
+            })
+            .catch((error) => {
+            console.error('Unable to create image:', error);
+            });
+        Images.create({
+            id: 3,
+            path : 'uploads\\4885c01b231e82330c0c8ef83dee276f.jpg',
+            birdId : 1
+            
+        })
+            .then((image) => {
+            console.log('Image created:', image.toJSON());
+            })
+            .catch((error) => {
+            console.error('Unable to create image:', error);
+            });
     }
 
     function createTestObservations() {
