@@ -67,14 +67,6 @@ router.post('/api/upload', upload.single('image'), async (req : any, res : any) 
 
 //GET - get one image by birdId
 router.get('/api/image/:id', async (req: any, res: any) => {
-  
-  //const imageId = req.params.id;
-  //const imagePath = `uploads/${imageId}.jpg`; // Replace with the actual path to the image on the server
-
-  // Send the image file as the response
-  //res.sendFile(path.resolve(imagePath));
-
-  //const birdId = req.params.id;
 
   const birdId = req.params.id;
   //let image : any
@@ -109,7 +101,7 @@ router.get('/api/images/:id', async (req: any, res: any) => {
 
   try {
       const imageList : any = await Images.findAll({
-      where: { birdId },
+      where: { birdId : birdId },
     })
 
     //imageList = imageList.map((image: { path: any; }) => {url : image.path})
