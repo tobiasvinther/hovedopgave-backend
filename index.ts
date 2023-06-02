@@ -1,10 +1,13 @@
 // Import the express in typescript file
-import express from 'express';
-import cors from "cors"
-import { createDatabase } from './database/database';
-import birdRouter from "./routers/birdRouter"
-import userRouter from "./routers/userRouter"
+import express from "express";
+import cors from "cors";
+import path from "path";
+import { createDatabase } from "./database/database";
+import birdRouter from "./routers/birdRouter";
+import userRouter from "./routers/userRouter";
 import uploadRouter from "./routers/uploadRouter";
+import observationRouter from "./routers/observationRouter";
+
 import sessiontp, { SessionOptions } from 'express-session';
 const bp = require('body-parser')
 
@@ -46,21 +49,25 @@ app.use(bp.urlencoded({ extended: true }))
 
 // Take a port 8080 for running server.
 const port: number = 8080;
- 
+
 // Handling '/' Request
-app.get('/', (_req, _res) => {
-    _res.send({"message":"TypeScript With Express"});
+app.get("/", (_req, _res) => {
+  _res.send({ message: "TypeScript With Express" });
 });
 
-createDatabase()
+createDatabase();
 
-app.use(birdRouter)
-app.use(userRouter)
-app.use(uploadRouter)
+app.use(birdRouter);
+app.use(userRouter);
+app.use(uploadRouter);
+app.use(observationRouter);
+
+// Serve the uploaded images statically
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 
 // Server setup
 app.listen(port, () => {
-    console.log(`TypeScript with Express
+  console.log(`TypeScript with Express
          http://localhost:${port}/`);
 });
