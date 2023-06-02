@@ -8,9 +8,44 @@ import userRouter from "./routers/userRouter";
 import uploadRouter from "./routers/uploadRouter";
 import observationRouter from "./routers/observationRouter";
 
+import sessiontp, { SessionOptions } from 'express-session';
+const bp = require('body-parser')
+
+// Her er du tilbage til start før slettet
 // Initialize the express engine
 const app: express.Application = express();
-app.use(cors({ credentials: true, origin: true }));
+app.use(cors({ credentials: true, origin: true }))
+
+
+declare module 'express-session' {
+  interface SessionData {
+    loggedIn: boolean
+       
+    // Add more custom properties if needed
+  }
+}
+// Setup session options
+const sessionConfig: SessionOptions = {
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: true,
+};
+// Middleware to use session to forfill the stateless situation between server and clint
+app.use(sessiontp(sessionConfig));
+
+
+/*
+import session from 'express-session'
+app.use(session({
+  secret : '',
+  resave : false,
+  saveUninitialized: true,
+  cookie : { secure : false}
+}))
+*/
+// Middleware to use bodyparser
+app.use(express.json());  
+app.use(bp.urlencoded({ extended: true }))
 
 // Take a port 8080 for running server.
 const port: number = 8080;
@@ -29,6 +64,7 @@ app.use(observationRouter);
 
 // Serve the uploaded images statically
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 
 // Server setup
 app.listen(port, () => {
