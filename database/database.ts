@@ -111,22 +111,21 @@ export const Images = sequelize.define("Images", {
 
 //Set up associations
 Birds.hasMany(Observations, { as: "observations", foreignKey: "birdId" });
-Birds.hasMany(Images, { as: "images", foreignKey: "birdId" });
-
-Images.belongsTo(Birds, { as: "bird", foreignKey: "birdId" });
-Images.belongsTo(Observations, { as: "image", foreignKey: "observationId" });
-
-Users.hasMany(Observations, { as: "observations", foreignKey: "userId" });
-
 Observations.belongsTo(Birds, { as: "bird", foreignKey: "birdId" });
-Observations.belongsTo(Users, { as: "user", foreignKey: "userId" });
-Observations.hasOne(Images, { as: "image", foreignKey: "imageId" });
-Observations.hasOne(Locations, { as: "location", foreignKey: "locationId" });
 
-Locations.belongsTo(Observations, {
-  as: "location",
-  foreignKey: "observationID",
-});
+Birds.hasMany(Images, { as: "images", foreignKey: "birdId" });
+Images.belongsTo(Birds, { as: "bird", foreignKey: "birdId" });
+
+Observations.hasOne(Images);
+Images.belongsTo(Observations);
+
+Users.hasMany(Observations);
+Observations.belongsTo(Users);
+
+Observations.hasOne(Locations);
+Locations.belongsTo(Observations);
+
+
 
 export function createDatabase() {
   //Test the connection
@@ -148,11 +147,11 @@ export function createDatabase() {
     .sync()
     .then(() => {
       console.log("Database synchronized");
+      createTestUsers();
       createTestBirds();
       createTestObservations();
       createTestLocations();
       createTestImages();
-      createTestUsers();
     })
     .catch((error) => {
       console.error("Unable to synchronize the database:", error);
@@ -198,7 +197,8 @@ export function createDatabase() {
       id: 1,
       path: "uploads/93edf5f3fed21e2f57eb473f50456811.jpg",
       birdId: 2,
-      observationId: 1,
+      //observationId: 1,
+      ObservationId: 1,
     })
       .then((image) => {
         console.log("Image created:", image.toJSON());
@@ -211,7 +211,7 @@ export function createDatabase() {
       id: 2,
       path: "uploads/f6c6fc9f2cee76bae6801eb2abdd7fb9.jpg",
       birdId: 2,
-      observationId: 2,
+      ObservationId: 2,
     })
       .then((image) => {
         console.log("Image created:", image.toJSON());
@@ -223,7 +223,7 @@ export function createDatabase() {
       id: 3,
       path: "uploads\\4885c01b231e82330c0c8ef83dee276f.jpg",
       birdId: 1,
-      observationId: 1,
+      ObservationId: 1,
     })
       .then((image) => {
         console.log("Image created:", image.toJSON());
@@ -238,8 +238,8 @@ export function createDatabase() {
     Observations.create({
       date: "1999-02-12",
       note: "A note",
-      birdId: 1,
-      userId: 1,
+      BirdId: 1,
+      UserId: 1,
     })
       .then((observationResult) => {
         console.log("Observation created:", observationResult.toJSON());
@@ -255,7 +255,7 @@ export function createDatabase() {
       date: "2007-10-11",
       note: "A note",
       birdId: 2,
-      userId: 1,
+      UserId: 1,
     })
       .then((observationResult) => {
         console.log("Observation created:", observationResult.toJSON());
@@ -274,24 +274,37 @@ export function createDatabase() {
     Locations.create({
       latitude: 55.585895,
       longitude: 12.015798,
-      observationId: 1,
-    });
+      ObservationId: 1,
+    })
+    .then((location) => {
+        console.log("Location created:", location.toJSON());
+      })
+    .catch((error) => {
+        console.error("Unable to create location:", error);
+      });
 
     Locations.create({
       latitude: 55.254994,
       longitude: 11.978616,
-      observationId: 2,
-    });
+      ObservationId: 2,
+    })
+    .then((location) => {
+        console.log("Location created:", location.toJSON());
+      })
+    .catch((error) => {
+        console.error("Unable to create location:", error);
+      });
   }
 
-  async function createTestUsers() {
+  function createTestUsers() {
     console.log("Creating users...");
-    const result = await bcrypt.hash("1234", 12);
+    //const result = await bcrypt.hash("1234", 12);
     Users.create({
       firstName: "Bruce",
       lastName: "Wayne",
       email: "bw@wayneinterprise.com",
-      password: result,
+      //password: result,
+      password: '123',
     })
       .then((user) => {
         console.log("User created: ", user.toJSON());
