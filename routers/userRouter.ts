@@ -60,30 +60,45 @@ router.post("/api/login", async (req, res) => {
   const password: string = req.body.password; // "1234"
   console.log(email);
   console.log(password);
-  const user: any = await Users.findOne({
+  
+  
+  if(!email || !password || email==="" || password==="") {
+    res.sendStatus(404); 
+  }
+  
+  try {
+    const user: any = await Users.findOne({
       where: {
           email: email,
       }
   });
-
-  if(!user) {
-    res.status(402).send("User or password not found!")
-    console.log("User or password not found!")
-  }
-  try {
-    const authorized = await bcrypt.compare(password, user.password)
-
-  if(!user && !authorized){
-      res.status(402).send("User or password not found!")
+    if(!user) {
       console.log("User or password not found!")
-  } else {
-      res.status(200).send("User is logged in!")
-      console.log("User logged in!")
+      const message = { failed: 'failed to login!' }
+        res.send(message);
+    } else {
+      const encryptedPassword = user.password; 
+      const passwordComparison = await bcrypt.compare(password, encryptedPassword)
+      console.log("Password match:", passwordComparison);
+
+      req.session.loggedIn = true
+    
+
+      if(passwordComparison === true) {
+        //const sessionData = req.session.loggedIn
+        console.log(req.session)
+        res.send(req.session.loggedIn) //{ sessionData: sessionData }
+      } else {
+        console.log("Password failed!");
+        res.send({ passwordfailed: "Password failed!" })
+      }
   }
-  } catch(error) {
-    console.log("Error!", error) 
+  } catch {
+     console.error()
   }
-});      
+
+});  
+    
 
 router.post("/api/logout", (req,res) => {
   // Clear the session
@@ -95,5 +110,17 @@ router.post("/api/logout", (req,res) => {
     res.redirect('/api/login'); 
   });
 });
+
+//check if user is logged in, then send applications
+router.get("/api/authenticate", async (req, res) => {
+
+ 
+
+  if(!req.session.loggedIn) {
+      res.sendStatus(401)
+  } else {
+      res.sendStatus(200)
+  }
+})
 
 export default router
