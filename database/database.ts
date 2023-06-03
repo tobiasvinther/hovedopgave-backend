@@ -125,8 +125,6 @@ Observations.belongsTo(Users);
 Observations.hasOne(Locations);
 Locations.belongsTo(Observations);
 
-
-
 export function createDatabase() {
   //Test the connection
   console.log("Testing connection...");
@@ -238,7 +236,7 @@ export function createDatabase() {
     Observations.create({
       date: "1999-02-12",
       note: "A note",
-      BirdId: 1,
+      birdId: 1,
       UserId: 1,
     })
       .then((observationResult) => {
@@ -276,10 +274,10 @@ export function createDatabase() {
       longitude: 12.015798,
       ObservationId: 1,
     })
-    .then((location) => {
+      .then((location) => {
         console.log("Location created:", location.toJSON());
       })
-    .catch((error) => {
+      .catch((error) => {
         console.error("Unable to create location:", error);
       });
 
@@ -288,10 +286,10 @@ export function createDatabase() {
       longitude: 11.978616,
       ObservationId: 2,
     })
-    .then((location) => {
+      .then((location) => {
         console.log("Location created:", location.toJSON());
       })
-    .catch((error) => {
+      .catch((error) => {
         console.error("Unable to create location:", error);
       });
   }
@@ -304,7 +302,7 @@ export function createDatabase() {
       lastName: "Wayne",
       email: "bw@wayneinterprise.com",
       //password: result,
-      password: '123',
+      password: "123",
     })
       .then((user) => {
         console.log("User created: ", user.toJSON());
