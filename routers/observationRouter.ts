@@ -11,6 +11,7 @@ router.get("/api/observations", async (req, res) => {
   res.send(foundObservations);
 });
 
+//GET - get all observations for specific bird
 router.get("/api/observations/:species", async (req, res) => {
   const species = req.params.species;
 
