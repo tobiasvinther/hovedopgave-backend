@@ -40,7 +40,7 @@ router.post('/api/register', async (req, res) => {
           if (!user) {
             Users.create(userData)
               .then((user: any) => {
-                const userCreated = { userCreated: true}
+                const userCreated = { userCreated: true }
                 console.log(userCreated)
                 res.send(userCreated)
               })
@@ -65,7 +65,7 @@ router.post("/api/login", async (req, res) => {
   console.log(password);
   
   
-  if(!email || !password || email === "" || password === "") {
+  if(!email || !password || email==="" || password==="") {
     res.sendStatus(404); 
   }
   
@@ -88,6 +88,7 @@ router.post("/api/login", async (req, res) => {
     
 
       if(passwordComparison === true) {
+        //const sessionData = req.session.loggedIn
         console.log(req.session)
         res.send(req.session.loggedIn) //{ sessionData: sessionData }
       } else {
@@ -102,17 +103,16 @@ router.post("/api/login", async (req, res) => {
 });  
     
 
-router.get("/api/logout", (req,res) => {
+router.post("/api/logout", (req,res) => {
   // Destroying the session
   req.session.destroy((error) => {
-    if (error) {
-      console.error('Failed to destroy the session:', error);
-    } else {
-      console.log('Session destroyed!');
+    if(error) {
+      console.error('Failed til destroy the session:', error)
+    }else {
+      console.log('Session destroyed!')
     }
-    res.send('You are now logged out!');
-  });
-  
+    res.send('You are now logged out!')
+  })
 });
 
 //check if user is logged in, then send applications
@@ -125,11 +125,3 @@ router.get("/api/authenticate", async (req, res) => {
 })
 
 export default router
-
-function loggedIn(err: any): void {
-  throw new Error('Function not implemented.')
-}
-function callback(err: any): void {
-  throw new Error('Function not implemented.')
-}
-
