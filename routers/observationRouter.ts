@@ -1,9 +1,17 @@
 import { Router } from "express";
 import { Birds, Observations } from "../database/database";
+import multer, { Multer } from "multer";
+import path from "path";
+import fs from "fs";
 
 const router = Router();
+const upload: Multer = multer({ dest: "../uploads/" });
 
-router;
+//Create the 'uploads/' folder if it doesn't exist
+const uploadFolder = path.join(__dirname, "../uploads/");
+if (!fs.existsSync(uploadFolder)) {
+  fs.mkdirSync(uploadFolder);
+}
 
 //GET - get all observations
 router.get("/api/observations", async (req, res) => {
@@ -25,6 +33,13 @@ router.get("/api/observations/:species", async (req, res) => {
     where: { birdId: foundBird.getDataValue("id") },
   });
   res.status(200).send(foundObservations);
+});
+
+//POST - create new observation
+router.post("/api/observations", upload.single("image"), async (req, res) => {
+  console.log(req.body);
+  console.log(req.file);
+  res.send(req.body);
 });
 
 export default router;
