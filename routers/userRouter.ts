@@ -24,8 +24,8 @@ router.post('/api/register', async (req, res) => {
         password: string,
         datetime: string
       } = {
-        firstName: req.body.firstname,
-        lastName: req.body.lastname,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
         email: req.body.email,
         password: hashPassword,
         datetime: today
@@ -40,13 +40,16 @@ router.post('/api/register', async (req, res) => {
           if (!user) {
             Users.create(userData)
               .then((user: any) => {
-                res.json({ status: user.email + ' ' + 'REGISTERED' })
+                const userCreated = { userCreated: true }
+                console.log(userCreated)
+                res.send(userCreated)
               })
               .catch((err: any) => {
                 res.send('ERROR: ' + err)
               })
           } else {
-            res.json({ error: "USER ALREADY EXISTS" })
+            const userExists = { userExists: true}
+            res.send(userExists)
           }
         })
         .catch((err: any) => {
@@ -101,21 +104,19 @@ router.post("/api/login", async (req, res) => {
     
 
 router.post("/api/logout", (req,res) => {
-  // Clear the session
+  // Destroying the session
   req.session.destroy((error) => {
     if(error) {
-      console.log('Error destroying session!', error)
+      console.error('Failed til destroy the session:', error)
+    }else {
+      console.log('Session destroyed!')
     }
-    // Redirect the user to the login page
-    res.redirect('/api/login'); 
-  });
+    res.send('You are now logged out!')
+  })
 });
 
 //check if user is logged in, then send applications
 router.get("/api/authenticate", async (req, res) => {
-
- 
-
   if(!req.session.loggedIn) {
       res.sendStatus(401)
   } else {
