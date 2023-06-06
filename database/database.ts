@@ -196,7 +196,7 @@ export function createDatabase() {
       path: "uploads/93edf5f3fed21e2f57eb473f50456811.jpg",
       birdId: 2,
       //observationId: 1,
-      ObservationId: 1,
+      ObservationId: 3,
     })
       .then((image) => {
         console.log("Image created:", image.toJSON());
@@ -209,7 +209,7 @@ export function createDatabase() {
       id: 2,
       path: "uploads/f6c6fc9f2cee76bae6801eb2abdd7fb9.jpg",
       birdId: 2,
-      ObservationId: 2,
+      ObservationId: 3,
     })
       .then((image) => {
         console.log("Image created:", image.toJSON());
@@ -221,7 +221,7 @@ export function createDatabase() {
       id: 3,
       path: "uploads\\4885c01b231e82330c0c8ef83dee276f.jpg",
       birdId: 1,
-      ObservationId: 1,
+      ObservationId: 2,
     })
       .then((image) => {
         console.log("Image created:", image.toJSON());
@@ -236,6 +236,23 @@ export function createDatabase() {
     Observations.create({
       date: "1999-02-12",
       note: "A note",
+      birdId: 1,
+      UserId: 1,
+      //ImageId : 1,
+    })
+      .then((observationResult) => {
+        console.log("Observation created:", observationResult.toJSON());
+        Birds.findByPk(observationResult.toJSON().birdId);
+        Users.findByPk(observationResult.toJSON().userId).then((result) =>
+          console.log("Bird query:", result)
+        );
+      })
+      .catch((error) => {
+        console.error("Unable to create observation:", error);
+      });
+    Observations.create({
+      date: "1998-02-12",
+      note: "jeg så en blåhals!",
       birdId: 1,
       UserId: 1,
     })

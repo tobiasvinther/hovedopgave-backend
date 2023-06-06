@@ -23,4 +23,16 @@ router.get("/api/birds/:species", async (req, res) => {
 
 })
 
+//GET - get bird by species
+router.get("/api/birdsById/:id", async (req, res) => {
+
+    const id = req.params.id
+
+    const foundBird = await Birds.findOne({
+        where : {id : id}
+    })
+    res.send(foundBird)
+
+})
+
 export default router

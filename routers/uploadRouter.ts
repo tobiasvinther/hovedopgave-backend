@@ -79,9 +79,36 @@ router.get('/api/image/:id', async (req: any, res: any) => {
       console.log(image)
 
       if(image.path) {
-        const imagePath = `uploads/${image.path}.jpg`; // Replace with the actual path to the image on the server
+        const imagePath = `uploads/${image.path}.jpg`;
         // Send the image file as the response
         res.sendFile(path.resolve(imagePath));
+      }
+      
+  } catch (error) {
+      console.error('Error finding image:', error);
+      return res.status(500).json({ error: 'Could not find image' });
+  };
+
+  
+});
+
+//GET - get one image by birdId
+router.get('/api/imageByObservation/:id', async (req: any, res: any) => {
+
+  const observationId = req.params.id;
+  //let image : any
+
+  try {
+      const image : any = await Images.findOne({
+      where: { ObservationId : observationId },
+      })
+
+      console.log("Image by observationId:", image)
+
+      if(image.path) {
+        const imagePath = image.path;
+        // Send the image file as the response
+        res.send(image);
       }
       
   } catch (error) {

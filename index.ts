@@ -28,7 +28,7 @@ declare module 'express-session' {
 const sessionConfig: SessionOptions = {
   secret: 'your-secret-key',
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: true
 };
 // Middleware to use session to forfill the stateless situation between server and clint
 app.use(sessiontp(sessionConfig));
