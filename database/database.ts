@@ -287,8 +287,8 @@ export function createDatabase() {
   function createTestLocations() {
     console.log("Creating locations...");
     Locations.create({
-      latitude: 12.015798,
-      longitude: 55.585895,
+      latitude: 55.585895,
+      longitude: 12.015798,
       ObservationId: 1,
     })
       .then((location) => {
@@ -299,8 +299,8 @@ export function createDatabase() {
       });
 
     Locations.create({
-      latitude: 11.978616,
-      longitude: 55.254994,
+      latitude: 55.254994,
+      longitude: 11.978616,
       ObservationId: 2,
     })
       .then((location) => {
