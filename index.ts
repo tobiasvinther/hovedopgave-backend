@@ -7,6 +7,7 @@ import birdRouter from "./routers/birdRouter";
 import userRouter from "./routers/userRouter";
 import uploadRouter from "./routers/uploadRouter";
 import observationRouter from "./routers/observationRouter";
+import locationRouter from "./routers/locationRouter";
 
 import sessiontp, { SessionOptions } from 'express-session';
 const bp = require('body-parser')
@@ -61,6 +62,7 @@ app.use(birdRouter);
 app.use(userRouter);
 app.use(uploadRouter);
 app.use(observationRouter);
+app.use(locationRouter);
 
 // Serve the uploaded images statically
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
