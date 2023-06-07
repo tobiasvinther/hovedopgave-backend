@@ -19,6 +19,7 @@ app.use(cors({ credentials: true, origin: true }));
 declare module "express-session" {
   interface SessionData {
     loggedIn: boolean;
+    userID: number;
 
     // Add more custom properties if needed
   }
@@ -35,14 +36,11 @@ app.use(sessiontp(sessionConfig));
 // Middleware to use bodyparser
 app.use(express.json());
 app.use(bp.urlencoded({ extended: true }));
+// Serve the uploaded images statically
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Take a port 8080 for running server.
 const port: number = 8080;
-
-// Handling '/' Request
-app.get("/", (_req, _res) => {
-  _res.send({ message: "TypeScript With Express" });
-});
 
 createDatabase();
 
@@ -51,8 +49,10 @@ app.use(userRouter);
 app.use(uploadRouter);
 app.use(observationRouter);
 
-// Serve the uploaded images statically
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// Handling '/' Request
+app.get("/", (_req, _res) => {
+  _res.send({ message: "TypeScript With Express" });
+});
 
 // Server setup
 app.listen(port, () => {
