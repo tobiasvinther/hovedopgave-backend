@@ -7,6 +7,7 @@ import birdRouter from "./routers/birdRouter";
 import userRouter from "./routers/userRouter";
 import uploadRouter from "./routers/uploadRouter";
 import observationRouter from "./routers/observationRouter";
+import locationRouter from "./routers/locationRouter";
 
 import sessiontp, { SessionOptions } from "express-session";
 const bp = require("body-parser");
@@ -28,7 +29,7 @@ declare module "express-session" {
 const sessionConfig: SessionOptions = {
   secret: "your-secret-key",
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: true
 };
 // Middleware to use session to forfill the stateless situation between server and clint
 app.use(sessiontp(sessionConfig));
@@ -48,6 +49,7 @@ app.use(birdRouter);
 app.use(userRouter);
 app.use(uploadRouter);
 app.use(observationRouter);
+app.use(locationRouter);
 
 // Handling '/' Request
 app.get("/", (_req, _res) => {
