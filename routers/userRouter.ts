@@ -94,6 +94,7 @@ router.post("/api/login", async (req, res) => {
 
       if (passwordComparison === true) {
         //const sessionData = req.session.loggedIn
+
         req.session.loggedIn = true;
         req.session.userID = user.id;
         console.log(req.session);
@@ -108,16 +109,36 @@ router.post("/api/login", async (req, res) => {
   }
 });
 
+
 router.post("/api/logout", (req, res) => {
   // Destroying the session
+  req.session.destroy(() => {
+  console.log(req.session)
+  res.send({ sessionDestroyed: true })
+  })
+  /*
   req.session.destroy((error) => {
-    if (error) {
-      console.error("Failed til destroy the session:", error);
-    } else {
-      console.log("Session destroyed!");
+
+    if(error) {
+      console.error('Failed til destroy the session:', error)
+    }else {
+      console.log('Session destroyed!')
+      console.log(req.session)
     }
-    res.send("You are now logged out!");
-  });
+    res.send({ sessionDestroyed: true })
+  })*/
+});
+
+router.get('/check-session', (req, res) => {
+  console.log(req.session.loggedIn)
+  if (req.session.loggedIn) {
+    // Session is created
+    res.status(200).json({ message: 'Session exists' });
+  } else {
+    // Session is not created
+    res.status(401).json({ message: 'Session does not exist' });
+  }
+
 });
 
 export default router;
