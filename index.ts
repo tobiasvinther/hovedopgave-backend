@@ -9,52 +9,39 @@ import uploadRouter from "./routers/uploadRouter";
 import observationRouter from "./routers/observationRouter";
 import locationRouter from "./routers/locationRouter";
 
-import sessiontp, { SessionOptions } from 'express-session';
-const bp = require('body-parser')
+import sessiontp, { SessionOptions } from "express-session";
+const bp = require("body-parser");
 
 // Her er du tilbage til start før slettet
 // Initialize the express engine
 const app: express.Application = express();
-app.use(cors({ credentials: true, origin: true }))
+app.use(cors({ credentials: true, origin: true }));
 
-
-declare module 'express-session' {
+declare module "express-session" {
   interface SessionData {
-    loggedIn: boolean
-       
+    loggedIn: boolean;
+    userID: number;
+
     // Add more custom properties if needed
   }
 }
 // Setup session options
 const sessionConfig: SessionOptions = {
-  secret: 'your-secret-key',
+  secret: "your-secret-key",
   resave: false,
   saveUninitialized: true
 };
 // Middleware to use session to forfill the stateless situation between server and clint
 app.use(sessiontp(sessionConfig));
 
-
-/*
-import session from 'express-session'
-app.use(session({
-  secret : '',
-  resave : false,
-  saveUninitialized: true,
-  cookie : { secure : false}
-}))
-*/
 // Middleware to use bodyparser
-app.use(express.json());  
-app.use(bp.urlencoded({ extended: true }))
+app.use(express.json());
+app.use(bp.urlencoded({ extended: true }));
+// Serve the uploaded images statically
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Take a port 8080 for running server.
 const port: number = 8080;
-
-// Handling '/' Request
-app.get("/", (_req, _res) => {
-  _res.send({ message: "TypeScript With Express" });
-});
 
 createDatabase();
 
@@ -64,9 +51,10 @@ app.use(uploadRouter);
 app.use(observationRouter);
 app.use(locationRouter);
 
-// Serve the uploaded images statically
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
+// Handling '/' Request
+app.get("/", (_req, _res) => {
+  _res.send({ message: "TypeScript With Express" });
+});
 
 // Server setup
 app.listen(port, () => {
