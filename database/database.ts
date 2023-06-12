@@ -1,5 +1,4 @@
-import { Sequelize, DataTypes, DATE, TIME, FLOAT } from "sequelize";
-import bcrypt from "bcrypt";
+import { Sequelize, DataTypes } from "sequelize";
 
 //Instantiate the database (in-memory for now)
 export const sequelize = new Sequelize("sqlite::memory:");
