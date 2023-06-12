@@ -35,10 +35,8 @@ router.post(
       console.log("File.path", file.path);
       console.log("FilePath", filePath);
       console.log("Image saved successfully!");
-      //return res.sendStatus(200);
     });
 
-    //
     const birdId = req.body.birdId;
 
     try {
